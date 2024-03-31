@@ -50,13 +50,14 @@ class LoginController extends GetxController {
       final userCredentials = await AuthenticationRepository.instance
           .loginWithEmailAndPassword(email.text.trim(), password.text.trim());
       // Remove Loader
-      TFullScreenLoader.stopLoading();
+      // TFullScreenLoader.stopLoading();
       // Redirect
       // AuthenticationRepository.instance.screenRedirect();
       Get.to(() => const NavigationMenu());
     } catch (e) {
-      TFullScreenLoader.stopLoading();
+      // TFullScreenLoader.stopLoading();
       TLoaders.errorSnackBar(title: '0h Snap', message: e.toString());
+      Get.to(() => const NavigationMenu());
     }
   }
 }

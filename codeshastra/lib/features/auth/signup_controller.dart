@@ -3,6 +3,7 @@ import 'package:codeshastra/features/auth/login_screen.dart';
 import 'package:codeshastra/features/auth/user_model.dart';
 import 'package:codeshastra/features/auth/user_repository.dart';
 import 'package:codeshastra/utils/constants/loaders.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
@@ -39,7 +40,9 @@ class SignupController extends GetxController {
       //   print('signup page had runned');
       //   print(isConnected);
       // }
-
+      if(kDebugMode) {
+        print("hello");
+      }
       // Form Validation
       if (!signupFormKey.currentState!.validate()) return;
 

@@ -1,3 +1,9 @@
+import 'package:codeshastra/features/charts/aethestic_chart.dart';
+import 'package:codeshastra/features/charts/aethetic_char2.dart';
+import 'package:codeshastra/features/charts/line_chart.dart';
+import 'package:codeshastra/features/charts/linechart_widget.dart';
+import 'package:codeshastra/features/ml/camera_classifier.dart';
+import 'package:codeshastra/features/profile/settings.dart';
 import 'package:codeshastra/utils/constants/colors.dart';
 import 'package:codeshastra/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
@@ -40,16 +46,14 @@ class NavigationMenu extends StatelessWidget {
 class NavigationController extends GetxController {
   final Rx<int> selectedIndex = 0.obs;
   final screens = [
-    const HomeScreen(),
-    Container(
-      color: const Color.fromARGB(255, 59, 245, 255),
-    ),
-    Container(
-      color: Colors.yellow,
-    ),
-    Container(
-      color: Colors.red,
-    ),
+    // const HomeScreen(),
+    // Container(
+    //   color: Color.fromARGB(255, 210, 255, 120),
+    // ),
+     HomePageCharter(),
+    LineChartWidget(pricePoints),
+    const CameraView(),
+    const SettingsScreen(),
   ];
 }
 

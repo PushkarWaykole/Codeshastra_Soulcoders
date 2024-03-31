@@ -19,9 +19,13 @@ dependencies:
   cloud_firestore: ^4.14.0
   connectivity_plus: ^5.0.2
   firebase_auth: ^4.16.0
-  flutter_native_splash: ^2.3.7
   smooth_page_indicator: ^1.1.0
   url_launcher: ^6.2.4
+  camera: ^0.10.5+9
+  permission_handler: ^11.0.1
+  flutter_native_splash: ^2.2.16
+  image : ^3.2.0
+  fl_chart: ^0.65.0
 
 dev_dependencies:
   flutter_test:
@@ -47,6 +51,7 @@ flutter:
     - assets/images/animations/
     - assets/icons/payment_methods/
     - assets/images/on_boarding_images/
+    - assets/
     
 
   #--------------- LOCAL FONTS ------------------#
