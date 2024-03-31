@@ -25,6 +25,9 @@ def determine_shake_direction(prev_pos, current_pos):
     else:
         return 'vertical'
 # Start capturing video from the webcam.
+
+
+
 cap = cv2.VideoCapture(0)
 # Variables to track the click state and count
 click = False
@@ -64,6 +67,7 @@ def insert_data(vertical_shakes, horizontal_shakes, total_shakes, click_count,wr
 # For shakes per second calculation
 start_time = time.time()
 shakes_last_second = 0
+current_hand_size=0
 with mp_hands.Hands(min_detection_confidence=0.8, min_tracking_confidence=0.5) as hands:
     while cap.isOpened():
         ret, frame = cap.read()
@@ -117,8 +121,7 @@ with mp_hands.Hands(min_detection_confidence=0.8, min_tracking_confidence=0.5) a
                     click = False
 
                 # Display "Index" or "Thumb" based on the normalized distance
-                finger_text = "Index" if normalized_distance > 0.8 else "Thumb"
-                cv2.putText(image, finger_text, (10, 190), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2, cv2.LINE_AA)
+                current_hand_size = calculate_distance(wrist, middle_mcp)
 
         
                 # Calculate elapsed time
@@ -158,7 +161,7 @@ with mp_hands.Hands(min_detection_confidence=0.8, min_tracking_confidence=0.5) a
         if elapsed_time >= 1.0:
             start_time = current_time
             shakes_last_second = 0
-
+        
         # Adjusted vertical spacing
         vertical_start = 50  # Starting position for the first label
         vertical_gap = 20    # Reduced gap between labels
@@ -172,13 +175,16 @@ with mp_hands.Hands(min_detection_confidence=0.8, min_tracking_confidence=0.5) a
         cv2.putText(image, f'Shakes/Sec: {shakes_last_second}', (10, vertical_start + vertical_gap * 3),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 0, cv2.LINE_AA)
         # Display the current normalized distance and click count
-        # cv2.putText(image, f'Norm Dist: {normalized_distance:.2f}', (10, vertical_start + vertical_gap * 4),
-        #             cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 0, cv2.LINE_AA)
+        
         cv2.putText(image, f'Clicks: {click_count}', (10, vertical_start + vertical_gap * 4),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 0, cv2.LINE_AA)
         # Display the calculated wrist angle on the image
         cv2.putText(image, f'Wrist Angle: {wrist_angle:.2f}', (10, vertical_start + vertical_gap * 5),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 0, cv2.LINE_AA)
+        finger_text = "Index" if normalized_distance > 0.8 else "Thumb"
+        cv2.putText(image, finger_text, (10, vertical_start + vertical_gap * 6), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 0, cv2.LINE_AA)
+        cv2.putText(image, f'Norm Distance: {current_hand_size:.2f}', (10, vertical_start + vertical_gap * 7),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,0, 0), 0, cv2.LINE_AA)
 
         cv2.imshow('MediaPipe Hands', image)
         
