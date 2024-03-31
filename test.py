@@ -11,7 +11,7 @@ mp_hands = mp.solutions.hands
 
 
 cv2.namedWindow('MediaPipe Hands', cv2.WINDOW_NORMAL)
-cv2.setWindowProperty('MediaPipe Hands', cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
+# cv2.setWindowProperty('MediaPipe Hands', cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
 def calculate_distance(landmark1, landmark2):
     return sqrt((landmark2.x - landmark1.x) ** 2 + (landmark2.y - landmark1.y) ** 2)
 
@@ -49,16 +49,17 @@ def calculate_angle_with_horizontal(p1, p2):
     angle = np.arccos(cosine_angle)
     return np.degrees(angle)
 
-
-def insert_data(vertical_shakes, horizontal_shakes, total_shakes, clicks):
-    conn = sqlite3.connect('hand_tracking.db')
-    cursor = conn.cursor()
+conn = sqlite3.connect('hand_tracking_2.db')
+global cursor
+cursor = conn.cursor()
+def insert_data(vertical_shakes, horizontal_shakes, total_shakes, click_count,wrist_angle):
+    
     cursor.execute('''
-    INSERT INTO tracking_data (vertical_shakes, horizontal_shakes, total_shakes, clicks)
-    VALUES (?, ?, ?, ?)
-    ''', (vertical_shakes, horizontal_shakes, total_shakes, clicks))
+    INSERT INTO tracking_data2 (vertical_shakes, horizontal_shakes, total_shakes, clicks,wrist_angle)
+    VALUES (?, ?, ?, ?, ?)
+    ''', (vertical_shakes, horizontal_shakes, total_shakes, click_count,wrist_angle))
     conn.commit()
-    conn.close()
+    # conn.close()
 
 # For shakes per second calculation
 start_time = time.time()
@@ -161,23 +162,23 @@ with mp_hands.Hands(min_detection_confidence=0.8, min_tracking_confidence=0.5) a
         # Adjusted vertical spacing
         vertical_start = 50  # Starting position for the first label
         vertical_gap = 20    # Reduced gap between labels
-        insert_data(vertical_shakes, horizontal_shakes, total_shakes, click_count)
+        insert_data(vertical_shakes, horizontal_shakes, total_shakes, click_count,wrist_angle)
         # Display shake counts and shakes per second with smaller font size and reduced spacing.
         cv2.putText(image, f'Total Shakes: {total_shakes}', (10, vertical_start),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 255), 0, cv2.LINE_AA)
-        cv2.putText(image, f'Vertical Shakes:  {vertical_shakes}', (10, vertical_start + vertical_gap * 1),cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 0, cv2.LINE_AA)
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 0, cv2.LINE_AA)
+        cv2.putText(image, f'Vertical Shakes:  {vertical_shakes}', (10, vertical_start + vertical_gap * 1),cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 0, cv2.LINE_AA)
         cv2.putText(image, f'Horizontal Shakes: {horizontal_shakes}', (10, vertical_start + vertical_gap * 2),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 0, cv2.LINE_AA)
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 0, cv2.LINE_AA)
         cv2.putText(image, f'Shakes/Sec: {shakes_last_second}', (10, vertical_start + vertical_gap * 3),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 100, 255), 0, cv2.LINE_AA)
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 0, cv2.LINE_AA)
         # Display the current normalized distance and click count
-        cv2.putText(image, f'Norm Dist: {normalized_distance:.2f}', (10, vertical_start + vertical_gap * 4),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 0, cv2.LINE_AA)
-        cv2.putText(image, f'Clicks: {click_count}', (10, vertical_start + vertical_gap * 5),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 0), 0, cv2.LINE_AA)
+        # cv2.putText(image, f'Norm Dist: {normalized_distance:.2f}', (10, vertical_start + vertical_gap * 4),
+        #             cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 0, cv2.LINE_AA)
+        cv2.putText(image, f'Clicks: {click_count}', (10, vertical_start + vertical_gap * 4),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 0, cv2.LINE_AA)
         # Display the calculated wrist angle on the image
-        cv2.putText(image, f'Wrist Angle: {wrist_angle:.2f}', (10, vertical_start + vertical_gap * 6),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 0), 0, cv2.LINE_AA)
+        cv2.putText(image, f'Wrist Angle: {wrist_angle:.2f}', (10, vertical_start + vertical_gap * 5),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 0, cv2.LINE_AA)
 
         cv2.imshow('MediaPipe Hands', image)
         
